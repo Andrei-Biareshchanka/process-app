@@ -1,4 +1,4 @@
-import type { Process } from "./modal/types";
+import type { Process } from "./model/types";
 
 export async function getById(id: string) {
   return await fetch(`/api/processes/${id}`).then(

@@ -1,28 +1,60 @@
+import { useState } from "react";
+import { BlockTypes, type FormData } from "../../model/types";
+import { WebhookFields } from "../webhook-fields";
 import styles from "./layout.module.css";
 
 export function Layout({
-  title,
-  body,
-  footer,
-  onClose,
+  id,
+  onSubmit,
 }: {
-  title: string;
-  body: React.ReactNode;
-  footer: React.ReactNode;
-  onClose?: () => void;
+  id: string;
+  onSubmit: (formData: FormData) => void;
 }) {
+  const [formData, setFormData] = useState<FormData>({
+    name: "Start",
+    type: BlockTypes.Start,
+    data: `{}`,
+  });
+
+  const handleTypeChange = (type: string) => {
+    setFormData({ ...formData, type, data: `{}`, name: type });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
   return (
-    <div className={styles.root}>
-      <div className={styles.modal}>
-        <button className={styles.close} onClick={onClose}>
-          x
-        </button>
-        <div className={styles.header}>
-          <div className={styles.title}>{title}</div>
-        </div>
-        <div className={styles.body}>{body}</div>
-        <div className={styles.footer}>{footer}</div>
-      </div>
-    </div>
+    <form className={styles.root} onSubmit={handleSubmit} id={id}>
+      <select
+        className={styles.input}
+        required
+        name="type"
+        value={formData.type}
+        onChange={(e) => handleTypeChange(e.target.value)}
+      >
+        {Object.values(BlockTypes).map((type) => (
+          <option key={type} value={type}>
+            {type}
+          </option>
+        ))}
+      </select>
+      <input
+        type="text"
+        className={styles.input}
+        placeholder="block name"
+        required
+        name="name"
+        value={formData.name}
+        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+      />
+      {formData.type === BlockTypes.Webhook && (
+        <WebhookFields
+          data={formData.data}
+          onChangeData={(data) => setFormData({ ...formData, data })}
+        />
+      )}
+    </form>
   );
 }

@@ -1,0 +1,6 @@
+.root {
+  display: flex;
+  position: relative;
+  position: absolute;
+  flex: 1;
+}

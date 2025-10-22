@@ -1,4 +1,4 @@
-import styles from "./layout.module.css";
+import styles from "./styles.module.css";
 
 export function Layout({
   title,

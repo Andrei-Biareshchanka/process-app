@@ -1,5 +1,5 @@
 import type { Block } from "../../model/types";
-import styles from "./layout.module.css";
+import styles from "./styles.module.css";
 
 export function Layout({ block }: { block: Block }) {
   return (

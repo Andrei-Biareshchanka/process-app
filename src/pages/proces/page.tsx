@@ -8,7 +8,7 @@ import { Root } from "./ui/root";
 export function Page() {
   const id = useProcessId();
   const process = useProcess(id);
-  const createBlock = useBlockCreate();
+  const createBlock = useBlockCreate(process.refetch);
 
   return (
     <Root
@@ -24,7 +24,9 @@ export function Page() {
       }
       modals={
         <CreateBlockModal
-          isOpen={createBlock.isCreating}
+          processId={id}
+          createPosition={createBlock.positionToCreate}
+          onSuccess={createBlock.successCreate}
           onClose={createBlock.stopCreate}
         />
       }

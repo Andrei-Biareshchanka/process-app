@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { BlockPosition } from "./types";
 
-export function useBlockCreate() {
+export function useBlockCreate(refetchProcess: () => void) {
   const [positionToCreate, setPositionToCreate] = useState<BlockPosition>();
 
   const startCreate = (position: BlockPosition) => {
@@ -12,7 +12,15 @@ export function useBlockCreate() {
     setPositionToCreate(undefined);
   };
 
-  const isCreating = !!positionToCreate;
+  const successCreate = () => {
+    refetchProcess();
+    stopCreate();
+  };
 
-  return { isCreating, startCreate, stopCreate };
+  return {
+    positionToCreate,
+    startCreate,
+    stopCreate,
+    successCreate,
+  };
 }

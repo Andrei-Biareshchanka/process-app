@@ -1,12 +1,4 @@
-import type { Process } from "./model/types";
-
-export async function getById(id: string) {
-  return await fetch(`/api/processes/${id}`).then(
-    (res) => res.json() as Promise<Process>
-  );
-}
-
-type CreateBLockBody = {
+export type CreateBlockBody = {
   processId: string;
   name: string;
   type: string;
@@ -15,8 +7,8 @@ type CreateBLockBody = {
   y: number;
 };
 
-export async function createBlock(data: CreateBLockBody) {
-  return await fetch(`/api/block`, {
+export async function createBlock(data: CreateBlockBody) {
+  return await fetch(`/api/blocks`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -25,25 +17,6 @@ export async function createBlock(data: CreateBLockBody) {
   });
 }
 
-type CreateRelationBody = {
-  inputId: string;
-  outputId: string;
-  inputPort: string;
-  outputPort: string;
-};
-
-export async function addRelation(data: CreateRelationBody) {
-  return await fetch(`/api/block/relation`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-}
-
-export const processApi = {
-  getById,
+export const manageBlockApi = {
   createBlock,
-  addRelation,
 };

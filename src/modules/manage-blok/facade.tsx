@@ -1,17 +1,30 @@
 import { useId } from "react";
+import type { BlockPosition } from "./model/types";
+import { useCreateBlock } from "./model/use-create-block";
 import { CreateForm } from "./ui/create-form";
 import { Modal } from "./ui/modal";
 import { SubmitButton } from "./ui/submit-button";
 
 export function Facade({
-  isOpen,
+  createPosition,
   onClose,
+  processId,
+  onSuccess,
 }: {
-  isOpen?: boolean;
+  createPosition?: BlockPosition;
   onClose?: () => void;
+  processId: string;
+  onSuccess?: () => void;
 }) {
   const formId = useId();
-  if (!isOpen) {
+
+  const createBlock = useCreateBlock({
+    processId,
+    onSuccess,
+    blockPosition: createPosition,
+  });
+
+  if (!createPosition) {
     return null;
   }
 
@@ -19,7 +32,7 @@ export function Facade({
     <Modal
       onClose={onClose}
       title="Create block"
-      body={<CreateForm id={formId} onSubmit={() => {}} />}
+      body={<CreateForm id={formId} onSubmit={createBlock!.startCreate} />}
       footer={
         <>
           <SubmitButton formId={formId} />

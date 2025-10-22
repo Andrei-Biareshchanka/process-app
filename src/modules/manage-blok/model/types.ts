@@ -1,8 +1,6 @@
-export type Block = {
-  id: string;
-  name: string;
-  type: string;
-  data: string;
+export type BlockPosition = {
+  x: number;
+  y: number;
 };
 
 export const BlockTypes = {
@@ -12,9 +10,3 @@ export const BlockTypes = {
 };
 
 export type BlockType = (typeof BlockTypes)[keyof typeof BlockTypes];
-
-export type FormData = {
-  name: string;
-  type: BlockType;
-  data: string;
-};

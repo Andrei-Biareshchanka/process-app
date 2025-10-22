@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { BlockTypes, type FormData } from "../../model/types";
-import { WebhookFields } from "../webhook-fields";
-import styles from "./layout.module.css";
+import { useCreateForm, type FormData } from "../../view-model/use-create-form";
+import { DefaultFields } from "../fields/default-fields";
+import { WebhookFields } from "../fields/webhook-fields";
+import styles from "./styles.module.css";
 
 export function Layout({
   id,
@@ -10,49 +10,19 @@ export function Layout({
   id: string;
   onSubmit: (formData: FormData) => void;
 }) {
-  const [formData, setFormData] = useState<FormData>({
-    name: "Start",
-    type: BlockTypes.Start,
-    data: `{}`,
-  });
-
-  const handleTypeChange = (type: string) => {
-    setFormData({ ...formData, type, data: `{}`, name: type });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+  const createForm = useCreateForm(onSubmit);
 
   return (
-    <form className={styles.root} onSubmit={handleSubmit} id={id}>
-      <select
-        className={styles.input}
-        required
-        name="type"
-        value={formData.type}
-        onChange={(e) => handleTypeChange(e.target.value)}
-      >
-        {Object.values(BlockTypes).map((type) => (
-          <option key={type} value={type}>
-            {type}
-          </option>
-        ))}
-      </select>
-      <input
-        type="text"
-        className={styles.input}
-        placeholder="block name"
-        required
-        name="name"
-        value={formData.name}
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+    <form className={styles.root} onSubmit={createForm.handleSubmit} id={id}>
+      <DefaultFields
+        formData={createForm.formData}
+        handleNameChange={createForm.handleNameChange}
+        handleTypeChange={createForm.handleTypeChange}
       />
-      {formData.type === BlockTypes.Webhook && (
+      {createForm.webhookFormData && (
         <WebhookFields
-          data={formData.data}
-          onChangeData={(data) => setFormData({ ...formData, data })}
+          formData={createForm.webhookFormData}
+          onChangeFormData={createForm.handleChangeWebhookFormData}
         />
       )}
     </form>

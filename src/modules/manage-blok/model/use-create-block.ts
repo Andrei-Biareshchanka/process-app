@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { create } from "zustand";
 import { manageBlockApi } from "../api";
 import type { BlockPosition } from "./types";
 
@@ -6,34 +6,41 @@ export type CreateBlockData = {
   name: string;
   type: string;
   data: string;
+  processId: string;
 };
 
-export function useCreateBlock({
-  processId,
-  blockPosition,
-  onSuccess,
-}: {
-  processId: string;
-  blockPosition?: BlockPosition;
-  onSuccess?: () => void;
-}) {
-  const [isCreating, setIsCreating] = useState(false);
+type Store = {
+  isCreating: boolean;
+  createPosition: BlockPosition | null;
+  startCreate: (data: BlockPosition) => void;
+  cancelCreate: () => void;
+  submitCreate: (data: CreateBlockData) => Promise<unknown>;
+};
 
-  if (!blockPosition) {
-    return;
-  }
+export const useCreateBlock = create<Store>((set, get) => ({
+  isCreating: false,
+  createPosition: null,
 
-  const create = (data: CreateBlockData) => {
-    setIsCreating(true);
-    manageBlockApi
+  startCreate: (data) => set({ createPosition: data }),
+
+  cancelCreate: () => set({ createPosition: null }),
+
+  submitCreate: async (data) => {
+    const createPosition = get().createPosition;
+
+    if (!createPosition) {
+      return;
+    }
+
+    set({ isCreating: true });
+
+    return manageBlockApi
       .createBlock({
-        processId,
         ...data,
-        ...blockPosition,
+        ...createPosition,
       })
-      .then(onSuccess)
-      .finally(() => setIsCreating(false));
-  };
-
-  return { isCreating, startCreate: create };
-}
+      .finally(() => {
+        set({ isCreating: false, createPosition: null });
+      });
+  },
+}));

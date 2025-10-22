@@ -1,6 +1,5 @@
 import { BlocksFlow } from "../../modules/blocks-flow";
-import { CreateBlockModal } from "../../modules/manage-blok";
-import { useBlockCreate } from "./model/use-block-create";
+import { CreateBlockModal, useStartCreate } from "../../modules/manage-blok";
 import { useProcess } from "./model/use-process";
 import { useProcessId } from "./model/use-process-id";
 import { Root } from "./ui/root";
@@ -8,7 +7,7 @@ import { Root } from "./ui/root";
 export function Page() {
   const id = useProcessId();
   const process = useProcess(id);
-  const createBlock = useBlockCreate(process.refetch);
+  const startCreate = useStartCreate();
 
   return (
     <Root
@@ -16,20 +15,10 @@ export function Page() {
       isLoading={process.isLoading}
       flow={
         process.data && (
-          <BlocksFlow
-            blocks={process.data.blocks}
-            onFlowClick={createBlock.startCreate}
-          />
+          <BlocksFlow blocks={process.data.blocks} onFlowClick={startCreate} />
         )
       }
-      modals={
-        <CreateBlockModal
-          processId={id}
-          createPosition={createBlock.positionToCreate}
-          onSuccess={createBlock.successCreate}
-          onClose={createBlock.stopCreate}
-        />
-      }
+      modals={<CreateBlockModal processId={id} onSuccess={process.refetch} />}
     />
   );
 }

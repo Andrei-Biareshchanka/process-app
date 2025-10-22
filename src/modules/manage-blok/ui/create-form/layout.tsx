@@ -4,16 +4,20 @@ import { WebhookFields } from "../fields/webhook-fields";
 import styles from "./styles.module.css";
 
 export function Layout({
-  id,
+  formId,
   onSubmit,
 }: {
-  id: string;
+  formId: string;
   onSubmit: (formData: FormData) => void;
 }) {
   const createForm = useCreateForm(onSubmit);
 
   return (
-    <form className={styles.root} onSubmit={createForm.handleSubmit} id={id}>
+    <form
+      className={styles.root}
+      onSubmit={createForm.handleSubmit}
+      id={formId}
+    >
       <DefaultFields
         formData={createForm.formData}
         handleNameChange={createForm.handleNameChange}
